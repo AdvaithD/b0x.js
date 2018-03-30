@@ -1,8 +1,9 @@
+/* eslint-disable camelcase */
 import ganache from "ganache-cli";
 import fs from "fs-extra";
 import ziptool from "ziptool";
 
-const TESTNET_FOLDER = "./test_network";
+const DEFAULT_TESTNET_FOLDER = "./test_network";
 
 const unzip = (from, to) =>
   new Promise((resolve, reject) =>
@@ -12,18 +13,22 @@ const unzip = (from, to) =>
     })
   );
 
-export const deploy = async () => {
-  await fs.emptyDir(TESTNET_FOLDER);
-  await unzip("../protocol_contracts/extra/b0x_db_latest.zip", TESTNET_FOLDER);
+export const deploy = async (folder = DEFAULT_TESTNET_FOLDER) => {
+  await fs.emptyDir(folder);
+  await unzip("../protocol_contracts/extra/b0x_db_latest.zip", folder);
 };
 
-export const run = () => {
+export const run = ({
+  network_id = 50,
+  port = 8545,
+  db_path = DEFAULT_TESTNET_FOLDER,
+  mnemonic = "concert load couple harbor equip island argue ramp clarify fence smart topic"
+} = {}) => {
   const options = {
-    network_id: 50,
-    port: 8545,
-    db_path: TESTNET_FOLDER,
-    mnemonic:
-      "concert load couple harbor equip island argue ramp clarify fence smart topic"
+    network_id,
+    port,
+    db_path,
+    mnemonic
   };
   const server = ganache.server(options);
   server.listen(options.port, options.hostname, err => {
