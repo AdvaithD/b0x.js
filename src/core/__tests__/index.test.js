@@ -1,4 +1,4 @@
-/* globals test, expect, describe */
+/* globals test, expect, describe, beforeAll, afterAll */
 import { constants } from "0x.js/lib/src/utils/constants";
 import { BigNumber } from "@0xproject/utils";
 import sigUtil from "eth-sig-util";
@@ -10,8 +10,19 @@ import b0xJS from "./setup";
 import makeOrder from "./order";
 import contracts from "../../contracts";
 import Accounts from "./accounts";
+import * as Network from "./network";
 
 const erc20Abi = EIP20.abi;
+let server = null;
+
+beforeAll(async () => {
+  await Network.deploy();
+  server = Network.run();
+});
+
+afterAll(() => {
+  server.close();
+});
 
 describe("signOrderHashAsync", () => {
   test("should sign properly", async () => {

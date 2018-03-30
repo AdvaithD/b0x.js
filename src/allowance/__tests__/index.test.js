@@ -1,10 +1,22 @@
-/* globals test, expect, describe, beforeEach, afterEach */
+/* globals test, expect, describe, beforeEach, afterEach, beforeAll, afterAll */
 import { constants } from "0x.js/lib/src/utils/constants";
 import { BigNumber } from "@0xproject/utils";
 import { pathOr } from "ramda";
 import Contracts from "../../contracts";
 import b0xJS from "../../core/__tests__/setup";
 import Accounts from "../../core/__tests__/accounts";
+import * as Network from "../../core/__tests__/network";
+
+let server = null;
+
+beforeAll(async () => {
+  await Network.deploy();
+  server = Network.run();
+});
+
+afterAll(() => {
+  server.close();
+});
 
 describe("allowance", () => {
   const tokenAddress = Contracts.TestToken0.address;

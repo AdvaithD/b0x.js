@@ -1,11 +1,23 @@
-/* globals test, describe, expect, beforeAll */
+/* globals test, describe, expect, beforeAll, afterAll */
 import { pathOr } from "ramda";
 import b0xJS from "../../core/__tests__/setup";
 import * as FillTestUtils from "../../fill/__tests__/utils";
 import Accounts from "../../core/__tests__/accounts";
 import * as TransferUtils from "./utils";
+import * as Network from "../../core/__tests__/network";
 
 const { web3 } = b0xJS;
+
+let server = null;
+
+beforeAll(async () => {
+  await Network.deploy();
+  server = Network.run();
+});
+
+afterAll(() => {
+  server.close();
+});
 
 describe("transfer", () => {
   const from = Accounts[0].address;

@@ -11,16 +11,23 @@ import * as Network from "../../core/__tests__/network";
 
 const { web3 } = b0xJS;
 
+let server = null;
+
+beforeAll(async () => {
+  await Network.deploy();
+  server = Network.run();
+});
+
+afterAll(() => {
+  server.close();
+});
+
 describe("filling orders", () => {
   const owner = Accounts[0].address;
   const lenders = [Accounts[1].address, Accounts[3].address];
   const traders = [Accounts[2].address, Accounts[4].address];
-  let server = null;
 
   beforeAll(async () => {
-    await Network.deploy();
-    server = Network.run();
-
     const {
       loanTokens,
       collateralTokens,
@@ -87,10 +94,6 @@ describe("filling orders", () => {
     console.log("after setting up tokens");
     const balancesAfter = await Promise.all(balancePs2);
     console.log(balancesAfter.map(bigNum => bigNum.toString()));
-  });
-
-  afterAll(() => {
-    server.close();
   });
 
   describe("takeLoanOrderAsLender", async () => {

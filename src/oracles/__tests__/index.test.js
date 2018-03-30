@@ -1,9 +1,21 @@
-/* globals test, describe, expect */
+/* globals test, describe, expect, beforeAll, afterAll */
 import { constants } from "0x.js/lib/src/utils/constants";
 import b0xJS from "../../core/__tests__/setup";
 import * as oracles from "../index";
 import * as Addresses from "../../core/__tests__/addresses";
 import Contracts from "../../contracts";
+import * as Network from "../../core/__tests__/network";
+
+let server = null;
+
+beforeAll(async () => {
+  await Network.deploy();
+  server = Network.run();
+});
+
+afterAll(() => {
+  server.close();
+});
 
 describe("oracles", () => {
   const testOracleNames = ["b0xOracle", "coolOracle", "anotherOracle"];
