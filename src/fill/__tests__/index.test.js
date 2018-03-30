@@ -90,11 +90,7 @@ describe("filling orders", () => {
   });
 
   afterAll(() => {
-    server.close(err => {
-      if (err) {
-        console.log(err.stack || err);
-      }
-    });
+    server.close();
   });
 
   describe("takeLoanOrderAsLender", async () => {
