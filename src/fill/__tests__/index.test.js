@@ -1,5 +1,6 @@
 /* globals test, describe, expect, beforeAll */
 import { pathOr } from "ramda";
+import ganache from "ganache-cli";
 import { constants as constantsZX } from "0x.js/lib/src/utils/constants";
 import B0xJS from "../../core";
 import b0xJS from "../../core/__tests__/setup";
@@ -16,6 +17,25 @@ describe("filling orders", () => {
   const traders = [Accounts[2].address, Accounts[4].address];
 
   beforeAll(async () => {
+    const options = {
+      network_id: 50,
+      port: 8545,
+      db_path: "./test_network",
+      mnemonic:
+        "concert load couple harbor equip island argue ramp clarify fence smart topic"
+    };
+    const server = ganache.server(options);
+    server.listen(options.port, null, err => {
+      if (err) {
+        console.log(err);
+        return;
+      }
+
+      console.log(
+        `Listening on ${options.hostname || "localhost"}:${options.port}`
+      );
+    });
+
     const {
       loanTokens,
       collateralTokens,
