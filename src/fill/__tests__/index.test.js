@@ -1,6 +1,5 @@
-/* globals test, describe, expect, beforeAll */
+/* globals test, describe, expect, beforeAll, afterAll */
 import { pathOr } from "ramda";
-import ganache from "ganache-cli";
 import { constants as constantsZX } from "0x.js/lib/src/utils/constants";
 import B0xJS from "../../core";
 import b0xJS from "../../core/__tests__/setup";
@@ -8,6 +7,7 @@ import makeOrder from "../../core/__tests__/order";
 import * as orderConstants from "../../core/constants/order";
 import * as Utils from "./utils";
 import Accounts from "../../core/__tests__/accounts";
+import * as Network from "../../core/__tests__/network";
 
 const { web3 } = b0xJS;
 
@@ -15,26 +15,11 @@ describe("filling orders", () => {
   const owner = Accounts[0].address;
   const lenders = [Accounts[1].address, Accounts[3].address];
   const traders = [Accounts[2].address, Accounts[4].address];
+  let server = null;
 
   beforeAll(async () => {
-    const options = {
-      network_id: 50,
-      port: 8545,
-      db_path: "./test_network",
-      mnemonic:
-        "concert load couple harbor equip island argue ramp clarify fence smart topic"
-    };
-    const server = ganache.server(options);
-    server.listen(options.port, null, err => {
-      if (err) {
-        console.log(err);
-        return;
-      }
-
-      console.log(
-        `Listening on ${options.hostname || "localhost"}:${options.port}`
-      );
-    });
+    await Network.deploy();
+    server = Network.run();
 
     const {
       loanTokens,
@@ -102,6 +87,14 @@ describe("filling orders", () => {
     console.log("after setting up tokens");
     const balancesAfter = await Promise.all(balancePs2);
     console.log(balancesAfter.map(bigNum => bigNum.toString()));
+  });
+
+  afterAll(() => {
+    server.close(err => {
+      if (err) {
+        console.log(err.stack || err);
+      }
+    });
   });
 
   describe("takeLoanOrderAsLender", async () => {
