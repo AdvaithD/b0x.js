@@ -7,7 +7,7 @@ import * as TransferUtils from "./utils";
 
 const { web3 } = b0xJS;
 
-describe("filling orders", () => {
+describe("transfer", () => {
   const from = Accounts[0].address;
   const to = Accounts[1].address;
   let balances = [];
